@@ -1,57 +1,80 @@
-// Fetch API Data
-async function fetchRecommendations() {
-    try {
-        const response = await fetch('travel_recommendation.json');
-        const data = await response.json();
-        console.log(data); // Debugging log to verify fetched data
-        return data;
-    } catch (error) {
-        console.error('Error fetching data:', error);
-    }
-}
-
-// Handle Search Button Click
-async function handleSearch() {
-    const searchInput = document.querySelector('.search-bar input').value.toLowerCase().trim();
-    const resultsContainer = document.getElementById('results');
-    resultsContainer.innerHTML = '';
-
-    const data = await fetchRecommendations();
-    let recommendations = [];
-
-    if (['beach', 'beaches'].includes(searchInput)) {
-        recommendations = data.beaches;
-    } else if (['temple', 'temples'].includes(searchInput)) {
-        recommendations = data.temples;
-    } else {
-        recommendations = data.countries.filter(country =>
-            country.name.toLowerCase().includes(searchInput)
-        ).flatMap(country => country.cities);
-    }
-
-    if (recommendations.length > 0) {
-        recommendations.forEach(item => {
-            const recommendationCard = document.createElement('div');
-            recommendationCard.className = 'recommendation-card';
-            recommendationCard.innerHTML = `
-                <img src="${item.imageUrl}" alt="${item.name}" />
-                <h3>${item.name}</h3>
-                <p>${item.description}</p>
-            `;
-            resultsContainer.appendChild(recommendationCard);
-        });
-    } else {
-        resultsContainer.innerHTML = '<p>No results found. Try a different keyword.</p>';
-    }
-}
+ //Ensure the DOM is loaded before accessing JSON data
+  document.addEventListener('DOMContentLoaded', () => { 
+    document.getElementById('search-button').addEventListener('click', () => { 
+        const query = document.getElementById('search-bar').value.toLowerCase(); 
+        fetch('travel_recommendation.json') 
+        .then(response => response.json()) 
+        .then(data => { const results = []; 
+            
+            // Search in countries and their cities
+            
+            data.countries.forEach(country => { 
+                country.cities.forEach(city => { 
+                if (city.name.toLowerCase().includes(query)) { 
+                    results.push({ 
+                        type: 'City', 
+                        name: city.name, 
+                        imageUrl: city.imageUrl, 
+                        description: city.description 
+                    }); 
+                } 
+            }); 
+        }); 
+        
+        // Search in temples
+        
+        data.temples.forEach(temple => { 
+            if (temple.name.toLowerCase().includes(query)) { 
+                results.push({ 
+                    type: 'Temple', 
+                    name: temple.name, 
+                    imageUrl: temple.imageUrl, 
+                    description: temple.description 
+                }); 
+            } 
+        }); 
+        
+        // Search in beaches
+         
+        data.beaches.forEach(beach => { 
+            if (beach.name.toLowerCase().includes(query)) { 
+                results.push({ 
+                    type: 'Beach', name: 
+                    beach.name, 
+                    imageUrl: beach.imageUrl, 
+                    description: beach.description }); 
+                } 
+            }); 
+            displayResults(results); 
+        }) 
+            .catch(error => console.error('Error fetching JSON data:', error)); 
+        }); 
+    }); 
+    
+    function displayResults(results) { 
+        const resultsDiv = document.getElementById('display-element'); 
+        resultsDiv.innerHTML = ''; 
+        if (results.length > 0) { 
+            results.forEach(result => { 
+                const div = document.createElement('div'); 
+                div.classList.add('result'); 
+                div.innerHTML = ` 
+                <h2>${result.name} (${result.type})</h2> 
+                <img class="resized-image" src="${result.imageUrl}" alt="${result.name}"> 
+                <p>${result.description}</p> `; 
+                resultsDiv.appendChild(div); 
+            }); 
+            } else { 
+                resultsDiv.textContent = 'No results found.'; 
+            } }
 
 // Handle Clear Button Click
 function handleClear() {
     document.querySelector('.search-bar input').value = '';
-    const resultsContainer = document.getElementById('results');
-    resultsContainer.innerHTML = '';
+    const resultsContainer = document.getElementById('resultsDiv');
+    resultsContainer.textContent = '';
 }
 
 // Event Listeners
-document.querySelector('.search-bar button:first-of-type').addEventListener('click', handleSearch);
+//document.querySelector('.search-bar button:first-of-type').addEventListener('click', handleSearch);
 document.querySelector('.search-bar button:last-of-type').addEventListener('click', handleClear);

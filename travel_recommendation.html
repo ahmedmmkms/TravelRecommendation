@@ -39,7 +39,7 @@
         }
         .home {
             text-align: center;
-            background: url('background.jpg') no-repeat center center/cover;
+            background: url('./images/background.jpg') no-repeat center center/cover;
             color: white;
             height: 100vh;
             display: flex;
@@ -84,7 +84,7 @@
 <!-- Navbar -->
 <nav>
     <div>
-        <img src="icon.png" alt="Website Icon" class="nav-icon">
+        <img src="./images/icon.png" alt="Website Icon" class="nav-icon">
         <a href="#">Travel Recommendations</a>
     </div>
     <div>
@@ -93,14 +93,16 @@
         <a href="#contact-us">Contact Us</a>
     </div>
     <div class="search-bar">
-        <input type="text" placeholder="Search...">
-        <button>Search</button>
+        <input type="text" id="search-bar" placeholder="Search...">
+        <button id="search-button">Search</button>
         <button>Reset</button>
     </div>
 </nav>
 
 <!-- Home Page -->
 <div id="home" class="home">
+    <div id="display-element"></div>
+    
     <h1>Welcome to Travel Recommendations</h1>
     <p>Discover amazing destinations and plan your next adventure with us!</p>
     <div class="social-icons">
@@ -109,6 +111,8 @@
         <a href="#">Instagram</a>
     </div>
 </div>
+
+
 
 <!-- About Us -->
 <div id="about-us" class="about-us">
@@ -133,6 +137,6 @@
         <button type="submit">Submit</button>
     </form>
 </div>
-
+<script src="./travel_recommendation.js"></script>
 </body>
 </html>
